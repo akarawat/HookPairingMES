@@ -1,0 +1,202 @@
+@model HookPairingMES.Models.DashboardViewModel
+@{
+    ViewData["Title"] = "Real-Time Dashboard";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Pass server-rendered data to JS as JSON -->
+<script id="initData" type="application/json">
+    @Html.Raw(System.Text.Json.JsonSerializer.Serialize(new {
+        bodyBoxplot  = Model.BodyBoxplot,
+        guideBoxplot = Model.GuideBoxplot,
+        bodyTrend    = Model.BodyTrend.Select(x => new {
+            x.MesId, x.MacSn, x.WoNo,
+            dt = x.DtCreate.ToString("HH:mm:ss"),
+            x.A1Axis, x.A2Axis, x.Z1Axis, x.X1Axis
+        }),
+        guideTrend = Model.GuideTrend.Select(x => new {
+            x.MesId, x.MacSn, x.WoNo,
+            dt = x.DtCreate.ToString("HH:mm:ss"),
+            x.A1Axis, x.A2Axis, x.Z1Axis, x.X1Axis
+        }),
+        hourlyCounts = Model.HourlyCounts,
+        kpi = Model.Kpi
+    }))
+</script>
+
+<div class="dashboard-container">
+
+    <!-- ── Filter Bar ────────────────────────────────────────── -->
+    <div class="filter-bar">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-3">
+                <label class="form-label-mes">Date From</label>
+                <input type="date" id="filterDateFrom" class="form-control form-control-mes"
+                       value="@DateTime.Today.AddDays(-7).ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label-mes">Date To</label>
+                <input type="date" id="filterDateTo" class="form-control form-control-mes"
+                       value="@DateTime.Today.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="col-md-3">
+                <label class="form-label-mes">Work Order</label>
+                <input type="text" id="filterWoNo" class="form-control form-control-mes"
+                       placeholder="All WO" />
+            </div>
+            <div class="col-md-3">
+                <button id="btnRefresh" class="btn btn-refresh w-100">
+                    <i class="bi bi-arrow-clockwise"></i> Refresh
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── KPI Row ───────────────────────────────────────────── -->
+    <div class="row g-3 mb-4" id="kpiRow">
+        <div class="col-6 col-md-3">
+            <div class="kpi-card kpi-body">
+                <div class="kpi-icon"><i class="bi bi-box-seam"></i></div>
+                <div class="kpi-label">Body Today</div>
+                <div class="kpi-value" id="kpiBodyToday">@Model.Kpi.BodyCountToday</div>
+                <div class="kpi-sub">Total: <span id="kpiBodyTotal">@Model.Kpi.BodyCountTotal</span></div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="kpi-card kpi-guide">
+                <div class="kpi-icon"><i class="bi bi-arrows-move"></i></div>
+                <div class="kpi-label">Guideway Today</div>
+                <div class="kpi-value" id="kpiGwToday">@Model.Kpi.GwCountToday</div>
+                <div class="kpi-sub">Total: <span id="kpiGwTotal">@Model.Kpi.GwCountTotal</span></div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="kpi-card kpi-sn">
+                <div class="kpi-icon"><i class="bi bi-fingerprint"></i></div>
+                <div class="kpi-label">Unique SN (Body)</div>
+                <div class="kpi-value" id="kpiBodySn">@Model.Kpi.BodySnToday</div>
+                <div class="kpi-sub">Today</div>
+            </div>
+        </div>
+        <div class="col-6 col-md-3">
+            <div class="kpi-card kpi-time">
+                <div class="kpi-icon"><i class="bi bi-clock-history"></i></div>
+                <div class="kpi-label">Last Measurement</div>
+                <div class="kpi-value kpi-value-sm" id="kpiLastBody">
+                    @(Model.Kpi.BodyLastMeasure?.ToString("HH:mm:ss") ?? "--")
+                </div>
+                <div class="kpi-sub" id="kpiLastGw">
+                    GW: @(Model.Kpi.GwLastMeasure?.ToString("HH:mm:ss") ?? "--")
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Chart Section ─────────────────────────────────────── -->
+    <div class="row g-3 mb-3">
+
+        <!-- Boxplot: Hook Body -->
+        <div class="col-xl-6">
+            <div class="chart-panel">
+                <div class="chart-panel-header">
+                    <span class="chart-title">
+                        <span class="title-dot dot-body"></span>
+                        Hook Body — Dimension Distribution
+                    </span>
+                    <span class="badge-part badge-body">BODY</span>
+                </div>
+                <canvas id="chartBodyBoxplot" height="220"></canvas>
+            </div>
+        </div>
+
+        <!-- Boxplot: Hook Guideway -->
+        <div class="col-xl-6">
+            <div class="chart-panel">
+                <div class="chart-panel-header">
+                    <span class="chart-title">
+                        <span class="title-dot dot-guide"></span>
+                        Hook Guideway — Dimension Distribution
+                    </span>
+                    <span class="badge-part badge-guide">GUIDEWAY</span>
+                </div>
+                <canvas id="chartGuideBoxplot" height="220"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-3">
+
+        <!-- Trend: Hook Body -->
+        <div class="col-xl-6">
+            <div class="chart-panel">
+                <div class="chart-panel-header">
+                    <span class="chart-title">
+                        <span class="title-dot dot-body"></span>
+                        Hook Body — Trend (Last 50)
+                    </span>
+                    <select id="bodyTrendAxis" class="select-axis">
+                        <option value="A1Axis">A1</option>
+                        <option value="A2Axis">A2</option>
+                        <option value="Z1Axis">Z1</option>
+                        <option value="X1Axis">X1</option>
+                    </select>
+                </div>
+                <canvas id="chartBodyTrend" height="180"></canvas>
+            </div>
+        </div>
+
+        <!-- Trend: Hook Guideway -->
+        <div class="col-xl-6">
+            <div class="chart-panel">
+                <div class="chart-panel-header">
+                    <span class="chart-title">
+                        <span class="title-dot dot-guide"></span>
+                        Hook Guideway — Trend (Last 50)
+                    </span>
+                    <select id="guideTrendAxis" class="select-axis">
+                        <option value="A1Axis">A1</option>
+                        <option value="A2Axis">A2</option>
+                        <option value="Z1Axis">Z1</option>
+                        <option value="X1Axis">X1</option>
+                    </select>
+                </div>
+                <canvas id="chartGuideTrend" height="180"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-3">
+        <!-- Hourly production bar chart -->
+        <div class="col-xl-8">
+            <div class="chart-panel">
+                <div class="chart-panel-header">
+                    <span class="chart-title">
+                        <i class="bi bi-bar-chart-fill me-1"></i>
+                        Hourly Production — Today
+                    </span>
+                </div>
+                <canvas id="chartHourly" height="160"></canvas>
+            </div>
+        </div>
+
+        <!-- Live Feed -->
+        <div class="col-xl-4">
+            <div class="chart-panel h-100">
+                <div class="chart-panel-header">
+                    <span class="chart-title">
+                        <i class="bi bi-broadcast me-1 text-danger"></i>
+                        Live Feed
+                    </span>
+                    <span class="live-badge-sm" id="liveFeedBadge">● LIVE</span>
+                </div>
+                <div id="liveFeed" class="live-feed-list"></div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="~/js/dashboard.js" asp-append-version="true"></script>
+    <script src="~/js/realtime.js" asp-append-version="true"></script>
+}

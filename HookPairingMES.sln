@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.6.11806.211 stable
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HookPairingMES", "HookPairingMES.csproj", "{68C138D5-DC40-9F21-8BE5-DB4EC487BCF2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{68C138D5-DC40-9F21-8BE5-DB4EC487BCF2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{68C138D5-DC40-9F21-8BE5-DB4EC487BCF2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{68C138D5-DC40-9F21-8BE5-DB4EC487BCF2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{68C138D5-DC40-9F21-8BE5-DB4EC487BCF2}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {524BD8D4-C667-43D8-8DEE-D13999D82555}
+	EndGlobalSection
+EndGlobal

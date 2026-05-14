@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>HookPairingMES</RootNamespace>
+    <AssemblyName>HookPairingMES</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- Dapper – lightweight ORM for stored procedures -->
+    <PackageReference Include="Dapper"                      Version="2.1.35" />
+    <!-- MS SQL Server driver -->
+    <PackageReference Include="Microsoft.Data.SqlClient"    Version="5.2.1" />
+    <!-- SignalR (included in ASP.NET Core 8 – explicit for clarity) -->
+    <PackageReference Include="Microsoft.AspNetCore.SignalR" Version="1.1.0" />
+    <!-- Swagger -->
+    <PackageReference Include="Swashbuckle.AspNetCore"       Version="6.6.2" />
+  </ItemGroup>
+
+</Project>
