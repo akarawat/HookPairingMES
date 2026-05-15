@@ -10,14 +10,22 @@
         bodyBoxplot  = Model.BodyBoxplot,
         guideBoxplot = Model.GuideBoxplot,
         bodyTrend    = Model.BodyTrend.Select(x => new {
-            x.MesId, x.MacSn, x.WoNo,
-            dt = x.DtCreate.ToString("HH:mm:ss"),
-            x.A1Axis, x.A2Axis, x.Z1Axis, x.X1Axis
+            dt     = x.DtCreate.ToString("HH:mm:ss"),
+            MacSn  = x.MacSn,
+            WoNo   = x.WoNo,
+            A1Axis = x.A1Axis,
+            A2Axis = x.A2Axis,
+            Z1Axis = x.Z1Axis,
+            X1Axis = x.X1Axis
         }),
         guideTrend = Model.GuideTrend.Select(x => new {
-            x.MesId, x.MacSn, x.WoNo,
-            dt = x.DtCreate.ToString("HH:mm:ss"),
-            x.A1Axis, x.A2Axis, x.Z1Axis, x.X1Axis
+            dt     = x.DtCreate.ToString("HH:mm:ss"),
+            MacSn  = x.MacSn,
+            WoNo   = x.WoNo,
+            A1Axis = x.A1Axis,
+            A2Axis = x.A2Axis,
+            Z1Axis = x.Z1Axis,
+            X1Axis = x.X1Axis
         }),
         hourlyCounts = Model.HourlyCounts,
         kpi = Model.Kpi
@@ -45,9 +53,14 @@
                        placeholder="All WO" />
             </div>
             <div class="col-md-3">
-                <button id="btnRefresh" class="btn btn-refresh w-100">
-                    <i class="bi bi-arrow-clockwise"></i> Refresh
-                </button>
+                <div class="d-flex gap-2">
+                    <button id="btnRefresh" class="btn btn-refresh flex-grow-1">
+                        <i class="bi bi-arrow-clockwise"></i> Refresh
+                    </button>
+                    <span id="autoRefreshCountdown" class="auto-refresh-badge">
+                        Auto refresh 05:00
+                    </span>
+                </div>
             </div>
         </div>
     </div>
@@ -93,9 +106,9 @@
     </div>
 
     <!-- ── Chart Section ─────────────────────────────────────── -->
+    @* Boxplot: ปิดชั่วคราว รอสรุปข้อมูลกับทีม *@
+    @*
     <div class="row g-3 mb-3">
-
-        <!-- Boxplot: Hook Body -->
         <div class="col-xl-6">
             <div class="chart-panel">
                 <div class="chart-panel-header">
@@ -108,8 +121,6 @@
                 <canvas id="chartBodyBoxplot" height="220"></canvas>
             </div>
         </div>
-
-        <!-- Boxplot: Hook Guideway -->
         <div class="col-xl-6">
             <div class="chart-panel">
                 <div class="chart-panel-header">
@@ -123,6 +134,7 @@
             </div>
         </div>
     </div>
+    *@
 
     <div class="row g-3 mb-3">
 
@@ -141,7 +153,7 @@
                         <option value="X1Axis">X1</option>
                     </select>
                 </div>
-                <canvas id="chartBodyTrend" height="180"></canvas>
+                <div class="chart-wrap chart-wrap-180"><canvas id="chartBodyTrend"></canvas></div>
             </div>
         </div>
 
@@ -160,14 +172,14 @@
                         <option value="X1Axis">X1</option>
                     </select>
                 </div>
-                <canvas id="chartGuideTrend" height="180"></canvas>
+                <div class="chart-wrap chart-wrap-180"><canvas id="chartGuideTrend"></canvas></div>
             </div>
         </div>
     </div>
 
     <div class="row g-3 mb-3">
         <!-- Hourly production bar chart -->
-        <div class="col-xl-8">
+        <div class="col-xl-12">
             <div class="chart-panel">
                 <div class="chart-panel-header">
                     <span class="chart-title">
@@ -175,21 +187,7 @@
                         Hourly Production — Today
                     </span>
                 </div>
-                <canvas id="chartHourly" height="160"></canvas>
-            </div>
-        </div>
-
-        <!-- Live Feed -->
-        <div class="col-xl-4">
-            <div class="chart-panel h-100">
-                <div class="chart-panel-header">
-                    <span class="chart-title">
-                        <i class="bi bi-broadcast me-1 text-danger"></i>
-                        Live Feed
-                    </span>
-                    <span class="live-badge-sm" id="liveFeedBadge">● LIVE</span>
-                </div>
-                <div id="liveFeed" class="live-feed-list"></div>
+                <div class="chart-wrap chart-wrap-120"><canvas id="chartHourly"></canvas></div>
             </div>
         </div>
     </div>
@@ -198,5 +196,4 @@
 
 @section Scripts {
     <script src="~/js/dashboard.js" asp-append-version="true"></script>
-    <script src="~/js/realtime.js" asp-append-version="true"></script>
 }

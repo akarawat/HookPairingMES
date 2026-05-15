@@ -39,6 +39,10 @@
                asp-controller="Dashboard" asp-action="Index">
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
+            <a class="nav-link-mes @(ViewContext.RouteData.Values["action"]?.ToString() == "Monitor" ? "active" : "")"
+               asp-controller="Dashboard" asp-action="Monitor">
+                <i class="bi bi-reception-4"></i> Live Monitor
+            </a>
             <a class="nav-link-mes @(ViewContext.RouteData.Values["action"]?.ToString() == "RawData" ? "active" : "")"
                asp-controller="Dashboard" asp-action="RawData">
                 <i class="bi bi-table"></i> Data Explorer
@@ -72,7 +76,7 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <!-- Chart.js + Boxplot plugin -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@sgratzl/chartjs-chart-boxplot@4.4.3/build/index.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@@sgratzl/chartjs-chart-boxplot@4.4.3/build/index.umd.min.js"></script>
 <!-- SignalR -->
 <script src="https://cdn.jsdelivr.net/npm/@@microsoft/signalr@8.0.0/dist/browser/signalr.min.js"></script>
 <!-- Site script -->

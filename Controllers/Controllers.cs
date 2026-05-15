@@ -21,11 +21,14 @@ namespace HookPairingMES.Controllers
             var filter = new DashboardFilter
             {
                 DateFrom = DateTime.Today.AddDays(-7),
-                DateTo   = DateTime.Today
+                DateTo = DateTime.Today
             };
             var vm = await _svc.GetDashboardDataAsync(filter);
             return View(vm);
         }
+
+        // GET: /Dashboard/Monitor  (real-time numeric monitor)
+        public IActionResult Monitor() => View();
 
         // GET: /Dashboard/RawData  (data explorer page)
         public IActionResult RawData() => View();
@@ -38,11 +41,19 @@ namespace HookPairingMES.Controllers
             var filter = new DashboardFilter
             {
                 DateFrom = dateFrom ?? DateTime.Today.AddDays(-7),
-                DateTo   = dateTo   ?? DateTime.Today,
-                WoNo     = woNo
+                DateTo = dateTo ?? DateTime.Today,
+                WoNo = woNo
             };
             var vm = await _svc.GetDashboardDataAsync(filter);
             return Json(vm);
+        }
+
+        // AJAX: /Dashboard/GetRecentJson
+        [HttpGet]
+        public async Task<IActionResult> GetRecentJson(int topN = 10)
+        {
+            var items = await _svc.GetRecentAsync(topN);
+            return Json(items);
         }
 
         // AJAX: /Dashboard/GetRawDataJson
@@ -66,10 +77,6 @@ namespace HookPairingMES.Controllers
 // Description: REST API Controller – receive measurement data
 //              from measuring machines / external systems
 // ============================================================
-
-using HookPairingMES.Models;
-using HookPairingMES.Services;
-using Microsoft.AspNetCore.Mvc;
 
 namespace HookPairingMES.Controllers
 {

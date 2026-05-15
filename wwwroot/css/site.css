@@ -192,6 +192,20 @@ html, body {
 
 .btn-refresh:hover { opacity: 0.85; color: #fff; }
 
+.auto-refresh-badge {
+    display: inline-flex;
+    align-items: center;
+    background: rgba(0,230,118,0.08);
+    border: 1px solid rgba(0,230,118,0.25);
+    color: #00e676;
+    border-radius: var(--radius-sm);
+    padding: 4px 10px;
+    font-size: 11px;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    white-space: nowrap;
+}
+
 /* ── KPI Cards ───────────────────────────────────────────── */
 .kpi-card {
     background: var(--bg-panel);
@@ -267,6 +281,16 @@ html, body {
     padding: 16px;
     height: 100%;
 }
+
+/* Chart.js ต้องการ parent ที่มี position:relative + height ชัดเจน
+   ไม่งั้น maintainAspectRatio:false จะวนขยายไม่หยุด */
+.chart-wrap {
+    position: relative;
+    width: 100%;
+}
+.chart-wrap-220 { height: 220px; }
+.chart-wrap-180 { height: 180px; }
+.chart-wrap-120 { height: 120px; }
 
 .chart-panel-header {
     display: flex;
@@ -377,15 +401,24 @@ html, body {
 
 /* ── Data Table ─────────────────────────────────────────── */
 .table-mes {
-    color: var(--text-primary);
+    /* Reset Bootstrap 5 table CSS variables ที่ทำให้ตัวหนังสือดำ */
+    --bs-table-color:        var(--text-primary);
+    --bs-table-bg:           transparent;
+    --bs-table-border-color: var(--border);
+    --bs-table-striped-bg:   var(--bg-surface);
+    --bs-table-striped-color: var(--text-primary);
+    --bs-table-hover-bg:     var(--bg-hover);
+    --bs-table-hover-color:  var(--text-primary);
+
+    color: var(--text-primary) !important;
     font-size: 12px;
     margin-bottom: 0;
 }
 
 .table-mes thead th {
-    background: var(--bg-surface);
-    border-color: var(--border);
-    color: var(--text-secondary);
+    background: var(--bg-surface) !important;
+    border-color: var(--border) !important;
+    color: var(--text-secondary) !important;
     font-size: 11px;
     font-weight: 700;
     text-transform: uppercase;
@@ -395,19 +428,21 @@ html, body {
 }
 
 .table-mes tbody td {
-    border-color: var(--border);
+    border-color: var(--border) !important;
     padding: 7px 10px;
     vertical-align: middle;
     font-family: var(--font-mono);
-    color: var(--text-primary);
+    color: var(--text-primary) !important;
+    background-color: transparent !important;
 }
 
 .table-mes tbody tr:hover td {
-    background: var(--bg-hover);
+    background: var(--bg-hover) !important;
+    color: var(--text-primary) !important;
 }
 
-.badge-body-sm   { color: var(--accent-body); }
-.badge-guide-sm  { color: var(--accent-guide); }
+.badge-body-sm  { color: var(--accent-body)  !important; font-weight: 700; }
+.badge-guide-sm { color: var(--accent-guide) !important; font-weight: 700; }
 
 /* ── Pagination ─────────────────────────────────────────── */
 .pagination .page-item .page-link {

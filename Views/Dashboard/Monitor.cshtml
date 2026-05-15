@@ -1,0 +1,162 @@
+@{
+    ViewData["Title"] = "Live Monitor";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="monitor-wrap">
+
+    <!-- ── Header bar ──────────────────────────────────────── -->
+    <div class="monitor-header">
+        <div class="d-flex align-items-center gap-3">
+            <span class="monitor-title">
+                <i class="bi bi-reception-4 me-2" style="color:#00e676"></i>
+                LIVE MEASUREMENT MONITOR
+            </span>
+            <span class="conn-pill" id="monConnPill">
+                <span class="conn-dot"></span>
+                <span id="monConnText">Connecting…</span>
+            </span>
+        </div>
+        <div class="d-flex align-items-center gap-4">
+            <div class="stat-mini">
+                <span class="stat-mini-label">RECEIVED TODAY</span>
+                <span class="stat-mini-val" id="monTotalCount">0</span>
+            </div>
+            <div class="stat-mini">
+                <span class="stat-mini-label">THIS SESSION</span>
+                <span class="stat-mini-val" id="monSessionCount">0</span>
+            </div>
+            <button id="monClearBtn" class="btn-mon-clear">
+                <i class="bi bi-trash3"></i> Clear Log
+            </button>
+        </div>
+    </div>
+
+    <!-- ── Latest value panels (Body | Guideway) ───────────── -->
+    <div class="row g-3 mb-3">
+
+        <!-- Hook Body Latest -->
+        <div class="col-md-6">
+            <div class="latest-panel latest-body" id="panelBody">
+                <div class="latest-header">
+                    <div>
+                        <span class="latest-type-label" style="color:#00d4ff">● HOOK BODY</span>
+                        <span class="latest-sn" id="bodyLatestSn">–</span>
+                    </div>
+                    <div class="text-end">
+                        <div class="latest-wo" id="bodyLatestWo">WO: –</div>
+                        <div class="latest-time" id="bodyLatestTime">–</div>
+                    </div>
+                </div>
+                <div class="axis-grid">
+                    <div class="axis-block">
+                        <div class="axis-label">A1 <span class="axis-unit">μm</span></div>
+                        <div class="axis-val" id="bodyA1">–.–––––</div>
+                    </div>
+                    <div class="axis-block">
+                        <div class="axis-label">A2 <span class="axis-unit">μm</span></div>
+                        <div class="axis-val" id="bodyA2">–.–––––</div>
+                    </div>
+                    <div class="axis-block">
+                        <div class="axis-label">Z1 <span class="axis-unit">μm</span></div>
+                        <div class="axis-val" id="bodyZ1">–.–––––</div>
+                    </div>
+                    <div class="axis-block">
+                        <div class="axis-label">X1 <span class="axis-unit">μm</span></div>
+                        <div class="axis-val" id="bodyX1">–.–––––</div>
+                    </div>
+                </div>
+                <div class="latest-meta">
+                    <span>BOX: <span id="bodyLatestBox">–</span></span>
+                    <span>OPR: <span id="bodyLatestOpr">–</span></span>
+                    <span>ID: <span id="bodyLatestId">–</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Hook Guideway Latest -->
+        <div class="col-md-6">
+            <div class="latest-panel latest-guide" id="panelGuide">
+                <div class="latest-header">
+                    <div>
+                        <span class="latest-type-label" style="color:#ff6b35">● HOOK GUIDEWAY</span>
+                        <span class="latest-sn" id="guideLatestSn">–</span>
+                    </div>
+                    <div class="text-end">
+                        <div class="latest-wo" id="guideLatestWo">WO: –</div>
+                        <div class="latest-time" id="guideLatestTime">–</div>
+                    </div>
+                </div>
+                <div class="axis-grid">
+                    <div class="axis-block">
+                        <div class="axis-label">A1 <span class="axis-unit">μm</span></div>
+                        <div class="axis-val" id="guideA1">–.–––––</div>
+                    </div>
+                    <div class="axis-block">
+                        <div class="axis-label">A2 <span class="axis-unit">μm</span></div>
+                        <div class="axis-val" id="guideA2">–.–––––</div>
+                    </div>
+                    <div class="axis-block">
+                        <div class="axis-label">Z1 <span class="axis-unit">μm</span></div>
+                        <div class="axis-val" id="guideZ1">–.–––––</div>
+                    </div>
+                    <div class="axis-block">
+                        <div class="axis-label">X1 <span class="axis-unit">μm</span></div>
+                        <div class="axis-val" id="guideX1">–.–––––</div>
+                    </div>
+                </div>
+                <div class="latest-meta">
+                    <span>BOX: <span id="guideLatestBox">–</span></span>
+                    <span>OPR: <span id="guideLatestOpr">–</span></span>
+                    <span>ID: <span id="guideLatestId">–</span></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Live Log Table ───────────────────────────────────── -->
+    <div class="log-panel">
+        <div class="log-panel-header">
+            <span><i class="bi bi-list-ul me-2"></i>MEASUREMENT LOG</span>
+            <span class="text-secondary" style="font-size:11px">
+                แสดง 200 รายการล่าสุด — ใหม่สุดอยู่บน
+            </span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-log" id="monLogTable">
+                <thead>
+                    <tr>
+                        <th style="width:60px">#</th>
+                        <th style="width:90px">Part</th>
+                        <th>Serial No.</th>
+                        <th>WO No.</th>
+                        <th>Box</th>
+                        <th>OPR</th>
+                        <th class="text-end">A1</th>
+                        <th class="text-end">A2</th>
+                        <th class="text-end">Z1</th>
+                        <th class="text-end">X1</th>
+                        <th style="width:110px">Time</th>
+                    </tr>
+                </thead>
+                <tbody id="monLogBody">
+                    <tr id="monEmptyRow">
+                        <td colspan="11" class="text-center py-5 text-secondary">
+                            <i class="bi bi-wifi me-2"></i>
+                            รอรับข้อมูลจากเครื่องวัด…
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/monitor.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="~/js/monitor.js" asp-append-version="true"></script>
+}

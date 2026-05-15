@@ -187,6 +187,15 @@ function initTrendChart(canvasId, trendArr, axisKey, color, bgColor) {
     return charts[canvasId];
 }
 
+// ── Normalise hourly row (รองรับ PascalCase / camelCase) ──────
+function normHourlyRow(row) {
+    return {
+        hourSlot:     row.HourSlot     ?? row.hourSlot     ?? row.hour_slot     ?? 0,
+        partType:     row.PartType     || row.partType     || row.part_type     || '',
+        measureCount: row.MeasureCount ?? row.measureCount ?? row.measure_count ?? 0
+    };
+}
+
 // ── Hourly Bar chart ──────────────────────────────────────────
 function initHourlyChart(hourlyData) {
     const ctx = document.getElementById('chartHourly');
@@ -194,16 +203,23 @@ function initHourlyChart(hourlyData) {
 
     if (charts.hourly) { charts.hourly.destroy(); }
 
+    // Debug — ดูใน browser console ว่าข้อมูลมาไหม
+    console.log('[Hourly] raw data:', hourlyData);
+
     // Build labels 0-23
-    const hours  = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2,'0')}:00`);
+    const hours     = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2,'0')}:00`);
     const bodyVals  = Array(24).fill(0);
     const guideVals = Array(24).fill(0);
 
-    (hourlyData || []).forEach(row => {
-        const h = row.HourSlot ?? row.hour_slot ?? 0;
-        if (row.PartType === 'Body'     || row.part_type === 'Body')     bodyVals[h]  = row.MeasureCount ?? row.measure_count;
-        if (row.PartType === 'Guideway' || row.part_type === 'Guideway') guideVals[h] = row.MeasureCount ?? row.measure_count;
+    (hourlyData || []).forEach(raw => {
+        const row = normHourlyRow(raw);
+        const h   = Math.min(Math.max(parseInt(row.hourSlot) || 0, 0), 23);
+        if (row.partType === 'Body')     bodyVals[h]  = row.measureCount;
+        if (row.partType === 'Guideway') guideVals[h] = row.measureCount;
     });
+
+    console.log('[Hourly] bodyVals:', bodyVals.filter(v=>v>0));
+    console.log('[Hourly] guideVals:', guideVals.filter(v=>v>0));
 
     charts.hourly = new Chart(ctx, {
         type: 'bar',
@@ -348,27 +364,42 @@ $(function () {
     bindAxisSelectors();
 
     // Refresh button
-    $('#btnRefresh').on('click', refreshDashboard);
+    $('#btnRefresh').on('click', function () {
+        refreshDashboard();
+        resetAutoRefresh();
+    });
 
-    // Auto-refresh every 60 s
-    setInterval(refreshDashboard, 60000);
+    // Auto Refresh ทุก 5 นาที
+    let autoRefreshTimer = null;
+    let countdownTimer   = null;
+    const REFRESH_SEC    = 300; // 5 นาที
+    let remaining        = REFRESH_SEC;
+
+    function resetAutoRefresh() {
+        clearInterval(autoRefreshTimer);
+        clearInterval(countdownTimer);
+        remaining = REFRESH_SEC;
+        updateCountdown();
+        countdownTimer   = setInterval(tickCountdown, 1000);
+        autoRefreshTimer = setInterval(function () {
+            refreshDashboard();
+            remaining = REFRESH_SEC;
+        }, REFRESH_SEC * 1000);
+    }
+
+    function tickCountdown() {
+        remaining = Math.max(0, remaining - 1);
+        updateCountdown();
+    }
+
+    function updateCountdown() {
+        const m   = String(Math.floor(remaining / 60)).padStart(2, '0');
+        const s   = String(remaining % 60).padStart(2, '0');
+        const el  = document.getElementById('autoRefreshCountdown');
+        if (el) el.textContent = `Auto refresh ${m}:${s}`;
+    }
+
+    resetAutoRefresh();
 });
 
-// ── Expose for realtime.js ────────────────────────────────────
-window.DashboardCharts = {
-    appendBodyTrend(row) {
-        const normalized = normTrendRow(row);
-        bodyTrend.push(normalized);
-        if (bodyTrend.length > MAX_TREND) bodyTrend.shift();
-        const axis = $('#bodyTrendAxis').val() || 'A1Axis';
-        appendTrendPoint('chartBodyTrend', bodyTrend, normalized, axis);
-    },
-    appendGuideTrend(row) {
-        const normalized = normTrendRow(row);
-        guideTrend.push(normalized);
-        if (guideTrend.length > MAX_TREND) guideTrend.shift();
-        const axis = $('#guideTrendAxis').val() || 'A1Axis';
-        appendTrendPoint('chartGuideTrend', guideTrend, normalized, axis);
-    },
-    updateKpi
-};
+
