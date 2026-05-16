@@ -4,6 +4,7 @@
 // ============================================================
 
 using HookPairingMES.Models;
+using HookPairingMES.Models.Dashboard;
 using HookPairingMES.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -12,8 +13,14 @@ namespace HookPairingMES.Controllers
     public class DashboardController : Controller
     {
         private readonly IMeasurementService _svc;
+        private readonly IFeature2Service _feature2Service;   // ← เพิ่ม
 
-        public DashboardController(IMeasurementService svc) => _svc = svc;
+        // ← รวม 2 service เข้า constructor เดียว
+        public DashboardController(IMeasurementService svc, IFeature2Service feature2Service)
+        {
+            _svc = svc;
+            _feature2Service = feature2Service;
+        }
 
         // GET: /Dashboard  (main real-time dashboard)
         public async Task<IActionResult> Index()
@@ -32,6 +39,25 @@ namespace HookPairingMES.Controllers
 
         // GET: /Dashboard/RawData  (data explorer page)
         public IActionResult RawData() => View();
+
+        // GET: /Dashboard/MonitorCombind
+        public async Task<IActionResult> MonitorCombind()
+        {
+            var vm = new MonitorCombindViewModel
+            {
+                MeasTable1 = await _feature2Service.GetLatestAsync("Feature_2_Measurement", 5),
+                MeasTable2 = await _feature2Service.GetLatestAsync("Feature_2_Measurement_2", 5),
+                LastRefreshed = DateTime.Now,
+                HookBodyChannels = new List<HookBodyChannel>
+                {
+                    new() { ChannelName = "A1" },
+                    new() { ChannelName = "A2" },
+                    new() { ChannelName = "Z1" },
+                    new() { ChannelName = "X1" },
+                }
+            };
+            return View(vm);
+        }
 
         // AJAX: /Dashboard/GetDashboardJson
         [HttpGet]
@@ -60,9 +86,12 @@ namespace HookPairingMES.Controllers
         [HttpGet]
         public async Task<IActionResult> GetRawDataJson(
             string partType = "Body",
-            DateTime? dateFrom = null, DateTime? dateTo = null,
-            string? woNo = null, string? macSn = null,
-            int pageNo = 1, int pageSize = 50)
+            DateTime? dateFrom = null,
+            DateTime? dateTo = null,
+            string? woNo = null,
+            string? macSn = null,
+            int pageNo = 1,
+            int pageSize = 50)
         {
             var result = await _svc.GetRawDataAsync(
                 partType, dateFrom, dateTo, woNo, macSn, pageNo, pageSize);

@@ -44,6 +44,9 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddEventSourceLogger();
 
+builder.Services.AddScoped<IFeature2Service, Feature2Service>();             // ← ADD
+builder.Services.AddHostedService<MonitorCombindBroadcaster>();              // ← ADD
+
 var app = builder.Build();
 
 // ── Pipeline ─────────────────────────────────────────────────
@@ -68,6 +71,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Dashboard}/{action=Index}/{id?}");
 
+app.MapHub<MonitorCombindHub>("/hubs/monitorCombind");
 // ── SignalR Hub ───────────────────────────────────────────────
 app.MapHub<MeasurementHub>("/hubs/measurement");
 
