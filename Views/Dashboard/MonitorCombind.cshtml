@@ -4,290 +4,61 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@* ── Inline styles ─────────────────────────────────────────────────────────── *@
-<style>
-    /* ── Page chrome ─────────────────────────────────────────────────── */
-    .monitor-header {
-        background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
-        color: #fff;
-        padding: 14px 24px;
-        border-radius: 10px;
-        margin-bottom: 20px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-    }
-
-        .monitor-header h4 {
-            margin: 0;
-            font-weight: 700;
-            letter-spacing: 1px;
-        }
-
-    .live-badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 6px;
-        background: rgba(255,255,255,.12);
-        border-radius: 20px;
-        padding: 4px 14px;
-        font-size: .8rem;
-    }
-
-    .live-dot {
-        width: 9px;
-        height: 9px;
-        border-radius: 50%;
-        background: #00e676;
-        animation: blink 1.2s infinite;
-    }
-
-    @@keyframes blink {
-        0%, 100% {
-            opacity: 1
-        }
-
-        50% {
-            opacity: .2
-        }
-    }
-
-    /* ── Section labels ──────────────────────────────────────────────── */
-    .section-label {
-        font-size: .7rem;
-        font-weight: 700;
-        letter-spacing: 2px;
-        text-transform: uppercase;
-        color: #6c757d;
-        border-bottom: 2px solid #e9ecef;
-        padding-bottom: 6px;
-        margin-bottom: 14px;
-    }
-
-    /* ── Hook Body channel cards ─────────────────────────────────────── */
-    .channel-card {
-        border: none;
-        border-radius: 12px;
-        box-shadow: 0 2px 12px rgba(0,0,0,.08);
-        transition: transform .15s, box-shadow .15s;
-        overflow: hidden;
-    }
-
-        .channel-card:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,.13);
-        }
-
-        .channel-card .card-header {
-            font-size: .75rem;
-            font-weight: 700;
-            letter-spacing: 1.5px;
-            padding: 8px 14px;
-            border-bottom: none;
-        }
-
-        .channel-card .card-body {
-            padding: 14px;
-        }
-
-    .channel-val {
-        font-size: 2rem;
-        font-weight: 800;
-        font-family: 'Courier New', monospace;
-        line-height: 1.1;
-    }
-
-    .channel-sub {
-        font-size: .72rem;
-        color: #888;
-        margin-top: 4px;
-    }
-
-    .status-pill {
-        font-size: .65rem;
-        font-weight: 700;
-        padding: 2px 10px;
-        border-radius: 20px;
-        letter-spacing: .5px;
-    }
-
-    /* channel colour themes */
-    .ch-a1 .card-header {
-        background: #e3f2fd;
-        color: #1565c0;
-    }
-
-    .ch-a2 .card-header {
-        background: #f3e5f5;
-        color: #6a1b9a;
-    }
-
-    .ch-z1 .card-header {
-        background: #e8f5e9;
-        color: #2e7d32;
-    }
-
-    .ch-x1 .card-header {
-        background: #fff3e0;
-        color: #e65100;
-    }
-
-    /* ── Feature-2 measurement cards ────────────────────────────────── */
-    .f2-card {
-        border: none;
-        border-radius: 12px;
-        box-shadow: 0 2px 12px rgba(0,0,0,.08);
-        height: 100%;
-    }
-
-        .f2-card .card-header {
-            border-radius: 12px 12px 0 0 !important;
-            font-weight: 700;
-            font-size: .82rem;
-            letter-spacing: .5px;
-            padding: 10px 16px;
-        }
-
-    .f2-table {
-        font-size: .82rem;
-        margin-bottom: 0;
-    }
-
-        .f2-table thead th {
-            font-size: .7rem;
-            font-weight: 700;
-            letter-spacing: .8px;
-            text-transform: uppercase;
-            color: #6c757d;
-            border-bottom: 2px solid #dee2e6;
-            padding: 6px 10px;
-        }
-
-        .f2-table tbody td {
-            padding: 7px 10px;
-            vertical-align: middle;
-        }
-
-        .f2-table tbody tr:hover {
-            background: #f8f9fa;
-        }
-
-    .f2-val {
-        font-family: 'Courier New', monospace;
-        font-weight: 700;
-        font-size: .88rem;
-    }
-
-    .f2-itemno {
-        max-width: 110px;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-    }
-
-    .f2-time {
-        font-size: .72rem;
-        color: #888;
-        white-space: nowrap;
-    }
-
-    .row-new {
-        animation: rowFlash .8s ease;
-    }
-
-    @@keyframes rowFlash {
-        0% {
-            background: #fffde7;
-        }
-
-        100% {
-            background: transparent;
-        }
-    }
-
-    /* ── Update timestamp ────────────────────────────────────────────── */
-    #lastUpdated {
-        font-size: .72rem;
-        color: #aaa;
-    }
-
-    /* ── Connection status pill ──────────────────────────────────────── */
-    #connStatus {
-        font-size: .72rem;
-        padding: 2px 10px;
-        border-radius: 20px;
-    }
-</style>
-
-@* ════════════════════════════════════════════════════════════════════════════ *@
-@* PAGE HEADER                                                                 *@
-@* ════════════════════════════════════════════════════════════════════════════ *@
-<div class="monitor-header">
+@* ══ PAGE HEADER ══════════════════════════════════════════════════════════════ *@
+<div class="mc-header">
     <div>
         <h4>🔗 Hook Pairing — Monitor Combined</h4>
         <small class="text-white-50">Real-time measurement dashboard</small>
     </div>
     <div class="d-flex align-items-center gap-3">
-        <span id="connStatus" class="badge bg-secondary">Connecting…</span>
-        <div class="live-badge">
-            <div class="live-dot" id="liveDot"></div>
+        <span id="mcHubStatus" class="badge bg-secondary">Connecting…</span>
+        <div class="mc-live-badge">
+            <div class="mc-live-dot"></div>
             <span>LIVE</span>
         </div>
-        <small id="lastUpdated">—</small>
+        <small id="mcLastUpdated">—</small>
     </div>
 </div>
 
-@* ════════════════════════════════════════════════════════════════════════════ *@
-@* SECTION 1 — HOOK BODY  (A1 / A2 / Z1 / X1)                                *@
-@* ════════════════════════════════════════════════════════════════════════════ *@
-<div class="section-label">⚙ Hook Body — Measurement Channels</div>
+@* ══ SECTION 1 — HOOK BODY (A1 / A2 / Z1 / X1) ══════════════════════════════ *@
+<div class="mc-section-label">⚙ Hook Body — Measurement Channels</div>
 <div class="row g-3 mb-4">
-    @foreach (var ch in new[] { ("A1", "ch-a1"), ("A2", "ch-a2"), ("Z1", "ch-z1"), ("X1", "ch-x1") })
+    @foreach (var ch in new[] { ("A1","ch-a1"), ("A2","ch-a2"), ("Z1","ch-z1"), ("X1","ch-x1") })
     {
         <div class="col-6 col-md-3">
             <div class="card channel-card @ch.Item2" id="card-@ch.Item1">
                 <div class="card-header d-flex justify-content-between align-items-center">
-                    <span>@ch.Item1</span>
-                    <span class="status-pill bg-success text-white" id="status-@ch.Item1">OK</span>
+                    <span>@ch.Item1 <small class="fw-normal opacity-75">μm</small></span>
                 </div>
                 <div class="card-body">
-                    <div class="channel-val" id="val-@ch.Item1">—</div>
-                    <div class="channel-sub">
-                        <span id="itemno-@ch.Item1">—</span>
-                    </div>
-                    <div class="channel-sub" id="time-@ch.Item1">—</div>
+                    <div class="channel-val" id="val-@ch.Item1">—.—————</div>
+                    <div class="channel-sub mt-2">SN: <span id="sn-@ch.Item1">—</span></div>
+                    <div class="channel-sub">WO: <span id="wo-@ch.Item1">—</span></div>
+                    <div class="channel-sub" id="time-@ch.Item1" style="color:#aaa">—</div>
                 </div>
             </div>
         </div>
     }
 </div>
 
-@* ════════════════════════════════════════════════════════════════════════════ *@
-@* SECTION 2 — FEATURE_2 MEASUREMENT TABLES                                   *@
-@* (replaces HOOK GUIDEWAY section)                                            *@
-@* ════════════════════════════════════════════════════════════════════════════ *@
-<div class="section-label">📐 Feature_2 — Measurement Log (Latest 5)</div>
+@* ══ SECTION 2 — FEATURE_2 TABLES ════════════════════════════════════════════ *@
+<div class="mc-section-label">📐 Feature_2 — Measurement Log (Latest 5)</div>
 <div class="row g-3 mb-4">
 
-    @* ── Table 1 : Feature_2_Measurement ─────────────────────────────────── *@
+    @* Table 1 : Feature_2_Measurement *@
     <div class="col-12 col-xl-6">
         <div class="card f2-card">
             <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
                 <span>📊 Feature_2_Measurement</span>
-                <span class="badge bg-white text-primary" id="badge-t1">
-                    @Model.MeasTable1.Count rows
-                </span>
+                <span class="badge bg-white text-primary" id="badge-t1">@Model.MeasTable1.Count rows</span>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table f2-table" id="tbl-f2-1">
+                    <table class="table f2-table">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Value (F2)</th>
-                                <th>Item No</th>
-                                <th>Classification</th>
-                                <th>Received At</th>
+                                <th>#</th><th>Value (F2)</th><th>Item No</th>
+                                <th>Class</th><th>Received At</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-f2-1">
@@ -297,11 +68,9 @@
                                     <td class="text-muted">@r.MesId</td>
                                     <td class="f2-val text-primary">@r.OpwValue.ToString("F5")</td>
                                     <td class="f2-itemno" title="@r.ItemNo">
-                                        @(r.ItemNo ?? "<span class='text-muted'>—</span>")
+                                        @if (r.ItemNo != null) { @r.ItemNo } else { <span class="text-muted">—</span> }
                                     </td>
-                                    <td>
-                                        <span class="badge bg-@r.ClassBadge">@r.ClassLabel</span>
-                                    </td>
+                                    <td><span class="badge bg-@r.ClassBadge">@r.ClassLabel</span></td>
                                     <td class="f2-time">@r.ReceivedAt.ToString("dd/MM HH:mm:ss")</td>
                                 </tr>
                             }
@@ -312,25 +81,20 @@
         </div>
     </div>
 
-    @* ── Table 2 : Feature_2_Measurement_2 ───────────────────────────────── *@
+    @* Table 2 : Feature_2_Measurement_2 *@
     <div class="col-12 col-xl-6">
         <div class="card f2-card">
             <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                 <span>📊 Feature_2_Measurement_2</span>
-                <span class="badge bg-white text-success" id="badge-t2">
-                    @Model.MeasTable2.Count rows
-                </span>
+                <span class="badge bg-white text-success" id="badge-t2">@Model.MeasTable2.Count rows</span>
             </div>
             <div class="card-body p-0">
                 <div class="table-responsive">
-                    <table class="table f2-table" id="tbl-f2-2">
+                    <table class="table f2-table">
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Value (F2)</th>
-                                <th>Item No</th>
-                                <th>Classification</th>
-                                <th>Received At</th>
+                                <th>#</th><th>Value (F2)</th><th>Item No</th>
+                                <th>Class</th><th>Received At</th>
                             </tr>
                         </thead>
                         <tbody id="tbody-f2-2">
@@ -340,11 +104,9 @@
                                     <td class="text-muted">@r.MesId</td>
                                     <td class="f2-val text-success">@r.OpwValue.ToString("F5")</td>
                                     <td class="f2-itemno" title="@r.ItemNo">
-                                        @(r.ItemNo ?? "<span class='text-muted'>—</span>")
+                                        @if (r.ItemNo != null) { @r.ItemNo } else { <span class="text-muted">—</span> }
                                     </td>
-                                    <td>
-                                        <span class="badge bg-@r.ClassBadge">@r.ClassLabel</span>
-                                    </td>
+                                    <td><span class="badge bg-@r.ClassBadge">@r.ClassLabel</span></td>
                                     <td class="f2-time">@r.ReceivedAt.ToString("dd/MM HH:mm:ss")</td>
                                 </tr>
                             }
@@ -356,172 +118,24 @@
     </div>
 </div>
 
-@* ════════════════════════════════════════════════════════════════════════════ *@
-@* SECTION 3 — MEASUREMENT LOG (existing table — DO NOT MODIFY)               *@
-@* Keep your existing @Html.Partial or section here unchanged                  *@
-@* ════════════════════════════════════════════════════════════════════════════ *@
-<div class="section-label">📋 Measurement Log</div>
+@* ══ SECTION 3 — MEASUREMENT LOG (ของเดิม ไม่แตะ) ════════════════════════════ *@
+<div class="mc-section-label">📋 Measurement Log</div>
 <div id="measurement-log-container">
-    @* ── วาง Partial View หรือ Table ที่มีอยู่แล้วตรงนี้เลยครับ ── *@
+    @* วาง Partial View หรือ Table ที่มีอยู่แล้วตรงนี้ *@
 </div>
 
-@* ════════════════════════════════════════════════════════════════════════════ *@
-@* SCRIPTS                                                                     *@
-@* ════════════════════════════════════════════════════════════════════════════ *@
+@* ══ ส่งค่า initial จาก Razor → JS ผ่าน window.MC ════════════════════════════ *@
+<script>
+    window.MC = {
+        lastId1: @(Model.MeasTable1.FirstOrDefault()?.MesId ?? 0),
+        lastId2: @(Model.MeasTable2.FirstOrDefault()?.MesId ?? 0)
+    };
+</script>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/monitorCombind.css" asp-append-version="true" />
+}
+
 @section Scripts {
-    @* SignalR JS โหลดจาก _Layout.cshtml แล้ว ไม่ต้องโหลดซ้ำ *@
-    <script>
-        $(function () {
-
-            // ════════════════════════════════════════════════════════════════════════
-            //  SignalR — Feature_2 real-time updates
-            // ════════════════════════════════════════════════════════════════════════
-            const hub = new signalR.HubConnectionBuilder()
-                .withUrl("/hubs/monitorCombind")
-                .withAutomaticReconnect([1000, 2000, 5000, 10000])
-                .build();
-
-            // Track latest mes_id so we can flash new rows
-            let lastId1 = @(Model.MeasTable1.FirstOrDefault()?.MesId ?? 0);
-            let lastId2 = @(Model.MeasTable2.FirstOrDefault()?.MesId ?? 0);
-
-            // ── Receive Feature_2 payload ─────────────────────────────────────────
-            hub.on("ReceiveFeature2Update", function (payload) {
-                renderTable(payload.table1, "#tbody-f2-1", "#badge-t1", "text-primary", lastId1,
-                    function(id){ lastId1 = id; });
-                renderTable(payload.table2, "#tbody-f2-2", "#badge-t2", "text-success", lastId2,
-                    function(id){ lastId2 = id; });
-                $("#lastUpdated").text("Updated: " + payload.updatedAt);
-            });
-
-            // ── Connection lifecycle ──────────────────────────────────────────────
-            hub.onreconnecting(() => {
-                setConn("warning", "Reconnecting…");
-            });
-            hub.onreconnected(() => {
-                setConn("success", "Connected");
-            });
-            hub.onclose(() => {
-                setConn("danger", "Disconnected");
-            });
-
-            hub.start()
-                .then(() => setConn("success", "Connected"))
-                .catch(err => { setConn("danger", "Error"); console.error(err); });
-
-            function setConn(cls, text) {
-                $("#connStatus")
-                    .removeClass("bg-secondary bg-success bg-warning bg-danger")
-                    .addClass("bg-" + cls)
-                    .text(text);
-            }
-
-            // ════════════════════════════════════════════════════════════════════════
-            //  Render Feature_2 table rows
-            // ════════════════════════════════════════════════════════════════════════
-            function renderTable(rows, tbodySel, badgeSel, valClass, prevLastId, setLastId) {
-                if (!rows || rows.length === 0) return;
-
-                const newTopId = rows[0].mesId;   // already sorted DESC
-                $(badgeSel).text(rows.length + " rows");
-
-                let html = "";
-                rows.forEach(function (r, idx) {
-                    const isNew = r.mesId > prevLastId;
-                    const cls   = isNew ? "row-new" : "";
-                    const badge = classBadge(r.classification);
-                    const label = classLabel(r.classification);
-                    const itemno = r.itemNo
-                        ? `<span title="${escHtml(r.itemNo)}">${escHtml(r.itemNo)}</span>`
-                        : `<span class="text-muted">—</span>`;
-
-                    html += `
-                    <tr class="${cls}">
-                        <td class="text-muted">${r.mesId}</td>
-                        <td class="f2-val ${valClass}">${r.opwValue.toFixed(5)}</td>
-                        <td class="f2-itemno">${itemno}</td>
-                        <td><span class="badge bg-${badge}">${label}</span></td>
-                        <td class="f2-time">${formatDt(r.receivedAt)}</td>
-                    </tr>`;
-                });
-
-                $(tbodySel).html(html);
-                if (newTopId > prevLastId) setLastId(newTopId);
-            }
-
-            function classBadge(c) {
-                if (c ===  2) return "danger";
-                if (c === -2) return "primary";
-                return "success";
-            }
-            function classLabel(c) {
-                if (c ===  2) return "HIGH";
-                if (c === -2) return "LOW";
-                return "OK";
-            }
-            function formatDt(dtStr) {
-                // dtStr from JSON: "2026-05-16T14:47:35.177"
-                const d = new Date(dtStr);
-                const dd   = String(d.getDate()).padStart(2,"0");
-                const mm   = String(d.getMonth()+1).padStart(2,"0");
-                const hh   = String(d.getHours()).padStart(2,"0");
-                const mi   = String(d.getMinutes()).padStart(2,"0");
-                const ss   = String(d.getSeconds()).padStart(2,"0");
-                return `${dd}/${mm} ${hh}:${mi}:${ss}`;
-            }
-            function escHtml(s) {
-                return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
-            }
-
-            // ════════════════════════════════════════════════════════════════════════
-            //  MeasurementHub — Hook Body channels (A1 / A2 / Z1 / X1)
-            //  ใช้ Hub เดิมที่มีอยู่แล้ว ไม่ได้สร้างใหม่
-            // ════════════════════════════════════════════════════════════════════════
-            const measureHub = new signalR.HubConnectionBuilder()
-                .withUrl("/hubs/measurement")
-                .withAutomaticReconnect([1000, 2000, 5000, 10000])
-                .build();
-
-            // รับ payload จาก MeasurementHub → LiveMeasurementPayload
-            // กรองเฉพาะ partType === "Body" เท่านั้น
-            measureHub.on("ReceiveMeasurement", function (data) {
-                if (!data || data.partType !== "Body") return;
-                console.log(data);
-                // ── อัปเดตค่า A1 / A2 / Z1 / X1 ─────────────────────────────────
-                updateChannel("A1", data.a1);
-                updateChannel("A2", data.a2);
-                updateChannel("Z1", data.z1);
-                updateChannel("X1", data.x1);
-
-                // ── อัปเดต metadata ใต้ค่า ────────────────────────────────────────
-                const meta = [
-                    data.macSn  ? "SN: "  + data.macSn  : null,
-                    data.woNo   ? "WO: "  + data.woNo   : null,
-                    data.box    ? "BOX: " + data.box     : null,
-                    data.opr    ? "OPR: " + data.opr     : null,
-                ].filter(Boolean).join("  |  ");
-
-                // แสดง macSn ใต้แต่ละ card
-                ["A1","A2","Z1","X1"].forEach(function(ch) {
-                    $("#itemno-" + ch).text(data.macSn || "—");
-                    $("#time-"   + ch).text(data.measuredAt ? formatDt(data.measuredAt) : "—");
-                });
-            });
-
-            // ── ฟังก์ชันอัปเดต card แต่ละช่อง ───────────────────────────────────
-            function updateChannel(ch, val) {
-                if (val === null || val === undefined) return;
-                const numVal = parseFloat(val);
-                $("#val-" + ch).text(numVal.toFixed(5));
-            }
-
-            measureHub.onreconnecting(() => console.log("MeasurementHub reconnecting…"));
-            measureHub.onreconnected(()  => console.log("MeasurementHub reconnected."));
-
-            measureHub.start()
-                .then(() => console.log("MeasurementHub connected."))
-                .catch(err => console.error("MeasurementHub error:", err));
-
-        });
-    </script>
+    <script src="~/js/monitorCombind.js" asp-append-version="true"></script>
 }

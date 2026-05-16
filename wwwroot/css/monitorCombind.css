@@ -1,0 +1,98 @@
+/* ============================================================
+   wwwroot/css/monitorCombind.css
+   Styles for /Dashboard/MonitorCombind
+   ============================================================ */
+
+/* ── Page chrome ─────────────────────────────────────────────────── */
+.mc-header {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    color: #fff; padding: 14px 24px; border-radius: 10px;
+    margin-bottom: 20px; display: flex;
+    align-items: center; justify-content: space-between;
+}
+.mc-header h4 { margin: 0; font-weight: 700; letter-spacing: 1px; }
+
+.mc-live-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: rgba(255,255,255,.12); border-radius: 20px;
+    padding: 4px 14px; font-size: .8rem;
+}
+.mc-live-dot {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: #00e676; animation: mcBlink 1.2s infinite;
+}
+@keyframes mcBlink { 0%,100%{opacity:1} 50%{opacity:.2} }
+
+/* ── Section labels ──────────────────────────────────────────────── */
+.mc-section-label {
+    font-size: .7rem; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase; color: #6c757d;
+    border-bottom: 2px solid #e9ecef; padding-bottom: 6px;
+    margin-bottom: 14px;
+}
+
+/* ── Hook Body channel cards ─────────────────────────────────────── */
+.channel-card {
+    border: none; border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.08);
+    transition: transform .15s, box-shadow .15s; overflow: hidden;
+}
+.channel-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,.13); }
+.channel-card .card-header {
+    font-size: .75rem; font-weight: 700; letter-spacing: 1.5px;
+    padding: 8px 14px; border-bottom: none;
+}
+.channel-card .card-body { padding: 14px; }
+
+.channel-val {
+    font-size: 2rem; font-weight: 800;
+    font-family: 'Share Tech Mono','Courier New',monospace; line-height: 1.1;
+}
+.channel-sub { font-size: .72rem; color: #888; margin-top: 4px; }
+.channel-sub span { font-family: 'Share Tech Mono',monospace; }
+
+/* channel colour themes */
+.ch-a1 .card-header { background:#e3f2fd; color:#1565c0; }
+.ch-a2 .card-header { background:#f3e5f5; color:#6a1b9a; }
+.ch-z1 .card-header { background:#e8f5e9; color:#2e7d32; }
+.ch-x1 .card-header { background:#fff3e0; color:#e65100; }
+.ch-a1 .channel-val { color:#1565c0; }
+.ch-a2 .channel-val { color:#6a1b9a; }
+.ch-z1 .channel-val { color:#2e7d32; }
+.ch-x1 .channel-val { color:#e65100; }
+
+/* card flash on new data */
+@keyframes cardFlash {
+    0%   { box-shadow: 0 0 0 3px rgba(0,230,118,.8); }
+    100% { box-shadow: 0 2px 12px rgba(0,0,0,.08); }
+}
+.card-updated { animation: cardFlash .7s ease; }
+
+/* ── Feature-2 tables ────────────────────────────────────────────── */
+.f2-card {
+    border: none; border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,.08); height: 100%;
+}
+.f2-card .card-header {
+    border-radius: 12px 12px 0 0 !important;
+    font-weight: 700; font-size: .82rem; padding: 10px 16px;
+}
+.f2-table { font-size: .82rem; margin-bottom: 0; }
+.f2-table thead th {
+    font-size: .7rem; font-weight: 700; letter-spacing: .8px;
+    text-transform: uppercase; color: #6c757d;
+    border-bottom: 2px solid #dee2e6; padding: 6px 10px;
+}
+.f2-table tbody td { padding: 7px 10px; vertical-align: middle; }
+.f2-table tbody tr:hover { background: #f8f9fa; }
+.f2-val { font-family:'Share Tech Mono','Courier New',monospace; font-weight:700; font-size:.88rem; }
+.f2-itemno { max-width:110px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.f2-time { font-size:.72rem; color:#888; white-space:nowrap; }
+
+/* new row flash */
+.row-new { animation: rowFlash .8s ease; }
+@keyframes rowFlash { 0%{background:#fffde7;} 100%{background:transparent;} }
+
+/* ── Header badges ───────────────────────────────────────────────── */
+#mcHubStatus   { font-size:.72rem; padding:2px 10px; border-radius:20px; }
+#mcLastUpdated { font-size:.72rem; color:#ccc; }

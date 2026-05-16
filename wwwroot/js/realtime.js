@@ -22,13 +22,13 @@ function setConnStatus(state) {
     if (!el) return;
 
     const states = {
-        connected:    { text: '● Connected',     cls: 'text-success' },
+        connected: { text: '● Connected', cls: 'text-success' },
         reconnecting: { text: '⟳ Reconnecting…', cls: 'text-warning' },
-        disconnected: { text: '✕ Disconnected',  cls: 'text-danger'  }
+        disconnected: { text: '✕ Disconnected', cls: 'text-danger' }
     };
     const s = states[state] || states.disconnected;
-    el.className  = `small ${s.cls}`;
-    el.innerHTML  = s.text;
+    el.className = `small ${s.cls}`;
+    el.innerHTML = s.text;
 
     if (bd) {
         bd.style.display = state === 'connected' ? 'inline-flex' : 'none';
@@ -37,14 +37,14 @@ function setConnStatus(state) {
 
 // ── Live feed DOM ─────────────────────────────────────────────
 function addFeedItem(payload) {
-    const feed   = document.getElementById('liveFeed');
+    const feed = document.getElementById('liveFeed');
     if (!feed) return;
 
     const isBody = payload.PartType === 'Body';
     const dotCls = isBody ? 'body' : 'guideway';
-    const color  = isBody ? '#00d4ff' : '#ff6b35';
-    const label  = isBody ? 'BODY' : 'GW';
-    const dt     = new Date(payload.DtCreate).toLocaleTimeString('th-TH');
+    const color = isBody ? '#00d4ff' : '#ff6b35';
+    const label = isBody ? 'BODY' : 'GW';
+    const dt = new Date(payload.DtCreate).toLocaleTimeString('th-TH');
 
     const item = document.createElement('div');
     item.className = 'live-feed-item';
@@ -80,9 +80,9 @@ connection.on('ReceiveMeasurement', function (payload) {
 
     // Forward to trend charts
     const row = {
-        dt:     new Date(payload.DtCreate).toLocaleTimeString('th-TH'),
-        MacSn:  payload.MacSn,
-        WoNo:   payload.WoNo,
+        dt: new Date(payload.DtCreate).toLocaleTimeString('th-TH'),
+        MacSn: payload.MacSn,
+        WoNo: payload.WoNo,
         A1Axis: payload.A1Axis,
         A2Axis: payload.A2Axis,
         Z1Axis: payload.Z1Axis,
@@ -90,7 +90,7 @@ connection.on('ReceiveMeasurement', function (payload) {
     };
 
     if (window.DashboardCharts) {
-        if (payload.PartType === 'Body')     window.DashboardCharts.appendBodyTrend(row);
+        if (payload.PartType === 'Body') window.DashboardCharts.appendBodyTrend(row);
         if (payload.PartType === 'Guideway') window.DashboardCharts.appendGuideTrend(row);
     }
 });

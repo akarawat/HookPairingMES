@@ -39,8 +39,8 @@
                asp-controller="Dashboard" asp-action="Index">
                 <i class="bi bi-speedometer2"></i> Dashboard
             </a>
-            <a class="nav-link-mes @(ViewContext.RouteData.Values["action"]?.ToString() == "Monitor" ? "active" : "")"
-               asp-controller="Dashboard" asp-action="Monitor">
+                <a class="nav-link-mes @(ViewContext.RouteData.Values["action"]?.ToString() == "MonitorCombind" ? "active" : "")"
+                   asp-controller="Dashboard" asp-action="MonitorCombind">
                 <i class="bi bi-reception-4"></i> Live Monitor
             </a>
             <a class="nav-link-mes @(ViewContext.RouteData.Values["action"]?.ToString() == "RawData" ? "active" : "")"
