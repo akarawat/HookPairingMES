@@ -13,13 +13,14 @@ namespace HookPairingMES.Controllers
     public class DashboardController : Controller
     {
         private readonly IMeasurementService _svc;
-        private readonly IFeature2Service _feature2Service;   // ← เพิ่ม
+        private readonly IFeature2Service _f2svc;
+        private readonly IConfiguration _config;
 
-        // ← รวม 2 service เข้า constructor เดียว
-        public DashboardController(IMeasurementService svc, IFeature2Service feature2Service)
+        public DashboardController(IMeasurementService svc, IFeature2Service f2svc, IConfiguration config)
         {
             _svc = svc;
-            _feature2Service = feature2Service;
+            _f2svc = f2svc;
+            _config = config;
         }
 
         // GET: /Dashboard  (main real-time dashboard)
@@ -37,27 +38,21 @@ namespace HookPairingMES.Controllers
         // GET: /Dashboard/Monitor  (real-time numeric monitor)
         public IActionResult Monitor() => View();
 
-        // GET: /Dashboard/RawData  (data explorer page)
-        public IActionResult RawData() => View();
-
-        // GET: /Dashboard/MonitorCombind
+        // GET: /Dashboard/MonitorCombind  (combined real-time monitor)
         public async Task<IActionResult> MonitorCombind()
         {
+            var topN = _config.GetValue<int>("MonitorCombind:Feature2TopN", 5);
             var vm = new MonitorCombindViewModel
             {
-                MeasTable1 = await _feature2Service.GetLatestAsync("Feature_2_Measurement", 5),
-                MeasTable2 = await _feature2Service.GetLatestAsync("Feature_2_Measurement_2", 5),
-                LastRefreshed = DateTime.Now,
-                HookBodyChannels = new List<HookBodyChannel>
-                {
-                    new() { ChannelName = "A1" },
-                    new() { ChannelName = "A2" },
-                    new() { ChannelName = "Z1" },
-                    new() { ChannelName = "X1" },
-                }
+                MeasTable1 = await _f2svc.GetLatestAsync("Feature_2_Measurement", topN),
+                MeasTable2 = await _f2svc.GetLatestAsync("Feature_2_Measurement_2", topN),
+                LastRefreshed = DateTime.Now
             };
             return View(vm);
         }
+
+        // GET: /Dashboard/RawData  (data explorer page)
+        public IActionResult RawData() => View();
 
         // AJAX: /Dashboard/GetDashboardJson
         [HttpGet]
@@ -82,16 +77,35 @@ namespace HookPairingMES.Controllers
             return Json(items);
         }
 
+        // GET: /Dashboard/ExportExcel  (Hook Body / Guideway Excel export)
+        [HttpGet]
+        public async Task<IActionResult> ExportExcel(
+            string partType = "Body",
+            DateTime? dateFrom = null, DateTime? dateTo = null,
+            string? woNo = null, string? macSn = null)
+        {
+            try
+            {
+                var data = await _f2svc.GetHookExportAsync(partType, dateFrom, dateTo, woNo, macSn);
+                var bytes = _f2svc.BuildHookExcel(data, partType);
+                string filename = $"Hook{partType}_{DateTime.Now:yyyyMMdd_HHmmss}.xlsx";
+                return File(bytes,
+                    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                    filename);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Export failed.");
+            }
+        }
+
         // AJAX: /Dashboard/GetRawDataJson
         [HttpGet]
         public async Task<IActionResult> GetRawDataJson(
             string partType = "Body",
-            DateTime? dateFrom = null,
-            DateTime? dateTo = null,
-            string? woNo = null,
-            string? macSn = null,
-            int pageNo = 1,
-            int pageSize = 50)
+            DateTime? dateFrom = null, DateTime? dateTo = null,
+            string? woNo = null, string? macSn = null,
+            int pageNo = 1, int pageSize = 50)
         {
             var result = await _svc.GetRawDataAsync(
                 partType, dateFrom, dateTo, woNo, macSn, pageNo, pageSize);

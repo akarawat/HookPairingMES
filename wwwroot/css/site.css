@@ -192,6 +192,18 @@ html, body {
 
 .btn-refresh:hover { opacity: 0.85; color: #fff; }
 
+.btn-export {
+    background: linear-gradient(135deg, #1a6b2e, #28a745);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    font-size: 13px;
+    padding: 7px 16px;
+    transition: opacity 0.2s;
+}
+.btn-export:hover { opacity: 0.85; color: #fff; }
+
 .auto-refresh-badge {
     display: inline-flex;
     align-items: center;

@@ -26,7 +26,7 @@ public class MonitorCombindHub : Hub
 public class MonitorCombindBroadcaster : BackgroundService
 {
     private readonly IHubContext<MonitorCombindHub> _hub;
-    private readonly IServiceScopeFactory           _scopeFactory;
+    private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<MonitorCombindBroadcaster> _logger;
     private readonly int _intervalMs;
 
@@ -36,11 +36,11 @@ public class MonitorCombindBroadcaster : BackgroundService
         IConfiguration config,
         ILogger<MonitorCombindBroadcaster> logger)
     {
-        _hub          = hub;
+        _hub = hub;
         _scopeFactory = scopeFactory;
-        _logger       = logger;
+        _logger = logger;
         // Default poll interval: 5 seconds. Override in appsettings.json
-        _intervalMs   = config.GetValue<int>("MonitorCombind:PollIntervalSeconds", 5) * 1000;
+        _intervalMs = config.GetValue<int>("MonitorCombind:PollIntervalSeconds", 5) * 1000;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -64,16 +64,18 @@ public class MonitorCombindBroadcaster : BackgroundService
 
     private async Task BroadcastAsync()
     {
-        using var scope   = _scopeFactory.CreateScope();
-        var svc           = scope.ServiceProvider.GetRequiredService<IFeature2Service>();
+        using var scope = _scopeFactory.CreateScope();
+        var svc = scope.ServiceProvider.GetRequiredService<IFeature2Service>();
+        var config = scope.ServiceProvider.GetRequiredService<IConfiguration>();
+        var topN = config.GetValue<int>("MonitorCombind:Feature2TopN", 5);
 
-        var t1 = await svc.GetLatestAsync("Feature_2_Measurement",   5);
-        var t2 = await svc.GetLatestAsync("Feature_2_Measurement_2", 5);
+        var t1 = await svc.GetLatestAsync("Feature_2_Measurement", topN);
+        var t2 = await svc.GetLatestAsync("Feature_2_Measurement_2", topN);
 
         var payload = new MonitorCombindPayload
         {
-            Table1    = t1,
-            Table2    = t2,
+            Table1 = t1,
+            Table2 = t2,
             UpdatedAt = DateTime.Now.ToString("dd/MM/yyyy HH:mm:ss")
         };
 

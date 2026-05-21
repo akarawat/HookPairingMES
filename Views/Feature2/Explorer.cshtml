@@ -1,0 +1,113 @@
+@{
+    ViewData["Title"] = "Feature2 Data Explorer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="dashboard-container">
+
+    <!-- ── Filter Bar ───────────────────────────────────────── -->
+    <div class="filter-bar mb-3">
+        <div class="row g-2 align-items-end">
+            <div class="col-md-2">
+                <label class="form-label-mes">Table</label>
+                <select id="f2Table" class="form-control form-control-mes">
+                    <option value="Feature_2_Measurement">Feature_2_Measurement</option>
+                    <option value="Feature_2_Measurement_2">Feature_2_Measurement_2</option>
+                </select>
+            </div>
+            <div class="col-md-2">
+                <label class="form-label-mes">Date From</label>
+                <input type="date" id="f2DateFrom" class="form-control form-control-mes"
+                       value="@DateTime.Today.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label-mes">Date To</label>
+                <input type="date" id="f2DateTo" class="form-control form-control-mes"
+                       value="@DateTime.Today.ToString("yyyy-MM-dd")" />
+            </div>
+            <div class="col-md-2">
+                <label class="form-label-mes">Item No.</label>
+                <input type="text" id="f2ItemNo" class="form-control form-control-mes"
+                       placeholder="All" />
+            </div>
+            <div class="col-md-2">
+                <button id="f2Search" class="btn btn-refresh w-100">
+                    <i class="bi bi-search"></i> Search
+                </button>
+            </div>
+            <div class="col-md-2">
+                <div class="d-flex gap-2">
+                    <button id="f2Export" class="btn btn-export flex-grow-1">
+                        <i class="bi bi-file-earmark-excel"></i> Excel
+                    </button>
+                    <span id="f2AutoRefreshBadge" class="auto-refresh-badge">
+                        Auto refresh 03:00
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Chart Panel ──────────────────────────────────────── -->
+    <div class="chart-panel mb-3">
+        <div class="chart-panel-header">
+            <span class="chart-title">
+                <i class="bi bi-graph-up me-1"></i>
+                <span id="f2ChartLabel">OpwValue Trend</span>
+            </span>
+            <div class="d-flex align-items-center gap-3" id="f2LimitLegend"></div>
+        </div>
+        <div class="chart-wrap chart-wrap-220">
+            <canvas id="f2Chart"></canvas>
+        </div>
+    </div>
+
+    <!-- ── Data Table ───────────────────────────────────────── -->
+    <div class="chart-panel">
+        <div class="chart-panel-header">
+            <span class="chart-title">
+                <i class="bi bi-table me-1"></i>
+                <span id="f2TableLabel">Feature_2_Measurement</span>
+            </span>
+            <span id="f2TotalInfo" class="text-secondary small"></span>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-mes" id="f2DataTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Value (F2)</th>
+                        <th>Measured</th>
+                        <th>Classification</th>
+                        <th>Item No.</th>
+                        <th>Received At</th>
+                    </tr>
+                </thead>
+                <tbody id="f2TableBody">
+                    <tr>
+                        <td colspan="6" class="text-center text-secondary py-4">
+                            <span class="spinner-border spinner-border-sm me-2"></span>
+                            กำลังโหลดข้อมูลวันนี้…
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Pagination -->
+        <div class="d-flex justify-content-between align-items-center mt-2 px-2">
+            <div class="small text-secondary" id="f2PageInfo">–</div>
+            <nav>
+                <ul class="pagination pagination-sm mb-0" id="f2Pagination"></ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        window.F2ClassConfig       = @Html.Raw(ViewBag.ClassConfigJson ?? "{}");
+        window.F2AutoRefreshSeconds = @(ViewBag.AutoRefreshSeconds ?? 180);
+    </script>
+    <script src="~/js/feature2explorer.js" asp-append-version="true"></script>
+}

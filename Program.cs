@@ -5,6 +5,7 @@
 
 using HookPairingMES.Data;
 using HookPairingMES.Hubs;
+using HookPairingMES.Hubs;
 using HookPairingMES.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -22,6 +23,8 @@ builder.Services.AddSignalR();
 // ── DI – Data & Services ─────────────────────────────────────
 builder.Services.AddScoped<IDatabaseHelper, DatabaseHelper>();
 builder.Services.AddScoped<IMeasurementService, MeasurementService>();
+builder.Services.AddScoped<IFeature2Service, Feature2Service>();
+builder.Services.AddHostedService<MonitorCombindBroadcaster>();
 
 // ── CORS (allow measurement machines on LAN) ─────────────────
 builder.Services.AddCors(opt =>
@@ -43,9 +46,6 @@ builder.Services.AddSwaggerGen(c =>
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 builder.Logging.AddEventSourceLogger();
-
-builder.Services.AddScoped<IFeature2Service, Feature2Service>();             // ← ADD
-builder.Services.AddHostedService<MonitorCombindBroadcaster>();              // ← ADD
 
 var app = builder.Build();
 
@@ -71,8 +71,8 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Dashboard}/{action=Index}/{id?}");
 
-app.MapHub<MonitorCombindHub>("/hubs/monitorCombind");
 // ── SignalR Hub ───────────────────────────────────────────────
 app.MapHub<MeasurementHub>("/hubs/measurement");
+app.MapHub<MonitorCombindHub>("/hubs/monitorCombind");
 
 app.Run();

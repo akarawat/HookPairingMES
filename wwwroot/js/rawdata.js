@@ -113,9 +113,28 @@ function renderPagination(total, totalPages, currentPage) {
     addPage('›', currentPage + 1, currentPage === totalPages);
 }
 
+// ── Excel export ──────────────────────────────────────────────
+function rdExportExcel() {
+    const params = new URLSearchParams({
+        partType: $('#rdPartType').val(),
+        dateFrom: $('#rdDateFrom').val(),
+        dateTo:   $('#rdDateTo').val(),
+        woNo:     $('#rdWoNo').val()  || '',
+        macSn:    $('#rdMacSn').val() || ''
+    });
+    const url = `/Dashboard/ExportExcel?${params.toString()}`;
+    const a   = document.createElement('a');
+    a.href    = url;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+}
+
 // ── Event bindings ────────────────────────────────────────────
 $(function () {
     $('#rdSearch').on('click', () => loadData(1));
+    $('#rdExport').on('click', rdExportExcel);
 
     $('#rdPagination').on('click', 'a.page-link', function (e) {
         e.preventDefault();

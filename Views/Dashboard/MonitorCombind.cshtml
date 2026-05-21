@@ -118,10 +118,38 @@
     </div>
 </div>
 
-@* ══ SECTION 3 — MEASUREMENT LOG (ของเดิม ไม่แตะ) ════════════════════════════ *@
+@* ══ SECTION 3 — MEASUREMENT LOG ════════════════════════════════════════════ *@
 <div class="mc-section-label">📋 Measurement Log</div>
-<div id="measurement-log-container">
-    @* วาง Partial View หรือ Table ที่มีอยู่แล้วตรงนี้ *@
+<div class="card" style="border:none; border-radius:12px; box-shadow:0 2px 12px rgba(0,0,0,.08);">
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-sm table-hover mb-0" id="mcLogTable"
+                   style="font-size:.82rem; font-family:'Share Tech Mono','Courier New',monospace;">
+                <thead style="font-size:.7rem; font-weight:700; text-transform:uppercase; color:#6c757d;">
+                    <tr>
+                        <th style="width:55px; padding:8px 10px;">#</th>
+                        <th style="width:80px;">Part</th>
+                        <th>Serial No.</th>
+                        <th>WO No.</th>
+                        <th>Box</th>
+                        <th>OPR</th>
+                        <th class="text-end">A1</th>
+                        <th class="text-end">A2</th>
+                        <th class="text-end">Z1</th>
+                        <th class="text-end">X1</th>
+                        <th style="width:90px;">Time</th>
+                    </tr>
+                </thead>
+                <tbody id="mcLogBody">
+                    <tr>
+                        <td colspan="11" class="text-center py-4 text-secondary">
+                            <i class="bi bi-hourglass-split me-2"></i>กำลังโหลด…
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
 @* ══ ส่งค่า initial จาก Razor → JS ผ่าน window.MC ════════════════════════════ *@

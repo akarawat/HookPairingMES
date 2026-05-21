@@ -57,6 +57,10 @@ $(function () {
         .build();
 
     measureHub.on('ReceiveMeasurement', function (payload) {
+        // ── เพิ่ม row ใหม่บนสุดของ Measurement Log (ทุก partType) ────────
+        if (window._mcPrependLogRow) window._mcPrependLogRow(payload);
+
+        // ── อัปเดต Hook Body cards เฉพาะ Body เท่านั้น ───────────────────
         if (!payload || payload.partType !== 'Body') return;
 
         updateChannel('A1', payload.a1Axis);
@@ -123,6 +127,78 @@ $(function () {
 
     loadLatestBodyAjax();                    // โหลดทันทีเมื่อเปิดหน้า
     setInterval(loadLatestBodyAjax, 30000);  // refresh ทุก 30 วินาที
+
+    // ════════════════════════════════════════════════════════════════════════
+    //  MEASUREMENT LOG — โหลดข้อมูลล่าสุดเมื่อเปิดหน้า
+    //  ใช้ endpoint เดิม /Dashboard/GetRecentJson
+    // ════════════════════════════════════════════════════════════════════════
+    const MAX_LOG_ROWS = 100;
+    let   logRowCount  = 0;
+
+    function loadMeasurementLog() {
+        $.getJSON('/Dashboard/GetRecentJson?topN=' + MAX_LOG_ROWS)
+            .done(function (data) {
+                if (!data || data.length === 0) {
+                    $('#mcLogBody').html(
+                        '<tr><td colspan="11" class="text-center py-4 text-secondary">' +
+                        '<i class="bi bi-inbox me-2"></i>ไม่มีข้อมูล</td></tr>');
+                    return;
+                }
+                let html = '';
+                data.forEach(function (r, i) {
+                    html += buildLogRow(r, i + 1);
+                });
+                $('#mcLogBody').html(html);
+                logRowCount = data.length;
+            })
+            .fail(function () {
+                $('#mcLogBody').html(
+                    '<tr><td colspan="11" class="text-center py-4 text-danger">' +
+                    'โหลดข้อมูลไม่สำเร็จ</td></tr>');
+            });
+    }
+
+    function buildLogRow(r, seq) {
+        const isBody = (r.partType || '').toLowerCase() === 'body';
+        const partBadge = isBody
+            ? '<span style="color:#00d4ff;font-weight:700">Body</span>'
+            : '<span style="color:#ff6b35;font-weight:700">GW</span>';
+        const dt = r.dtCreate
+            ? new Date(r.dtCreate).toLocaleTimeString('th-TH')
+            : '—';
+        const fmt = v => (v != null && v !== 0) ? parseFloat(v).toFixed(5) : '–.–––––';
+
+        return `<tr>
+            <td class="text-muted" style="padding:6px 10px;">${seq}</td>
+            <td>${partBadge}</td>
+            <td>${escHtml(r.macSn || '–')}</td>
+            <td>${escHtml(r.woNo  || '–')}</td>
+            <td>${escHtml(r.boxNo || '–')}</td>
+            <td>${escHtml(r.oprNo || '–')}</td>
+            <td class="text-end">${fmt(r.a1Axis)}</td>
+            <td class="text-end">${fmt(r.a2Axis)}</td>
+            <td class="text-end">${fmt(r.z1Axis)}</td>
+            <td class="text-end">${fmt(r.x1Axis)}</td>
+            <td>${dt}</td>
+        </tr>`;
+    }
+
+    // โหลดครั้งแรกเมื่อเปิดหน้า
+    loadMeasurementLog();
+
+    // เพิ่ม row ใหม่บนสุดเมื่อมีข้อมูลจาก SignalR (ReceiveMeasurement)
+    // เรียกใช้ภายใน measureHub.on() ด้านบน — ผ่าน prependLogRow()
+    window._mcPrependLogRow = function (payload) {
+        logRowCount++;
+        const newRow = $(buildLogRow(payload, logRowCount));
+        newRow.css('background', '#fffde7');   // flash เหลืองสั้นๆ
+        $('#mcLogBody').prepend(newRow);
+        setTimeout(() => newRow.css('background', ''), 800);
+
+        // ตัด row เกิน MAX_LOG_ROWS
+        const rows = $('#mcLogBody tr');
+        if (rows.length > MAX_LOG_ROWS) rows.last().remove();
+    };
 
     // ════════════════════════════════════════════════════════════════════════
     //  Helper functions
